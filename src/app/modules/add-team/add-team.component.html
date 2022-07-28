@@ -1,0 +1,141 @@
+<div class="header">
+  <div>
+    <h1>Add Team</h1>
+  </div>
+  <div>
+    <button mat-stroked-button>x</button>
+  </div>
+</div>
+<form [formGroup]="addTeamForm" (ngSubmit)="saveTeam()">
+  <div class="container">
+    <div>
+        <label>Team name</label>
+        <mat-form-field class="example-full-width" appearance="outline">
+          <input
+            type="email"
+            matInput
+            formControlName="name"
+            placeholder="Best team"
+          />
+          <mat-error *ngIf="addTeamForm.controls['name'].hasError('required')">
+            Team name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="flex">
+        <div class="select-block">
+          <label>Country</label>
+          <mat-form-field appearance="outline">
+            <mat-label>Select</mat-label>
+            <mat-select formControlName="country_code">
+              <mat-option
+                *ngFor="let country of countryList | keyvalue"
+                [value]="country.key"
+              >
+                {{ country.value }}
+              </mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="addTeamForm.controls['country_code'].hasError('required')"
+            >
+              Country is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="select-block">
+          <label>Timezone</label>
+          <mat-form-field appearance="outline">
+            <mat-label>Select</mat-label>
+            <mat-select formControlName="timezone">
+              <mat-option
+                *ngFor="let timezone of timezoneList"
+                [value]="timezone.name"
+              >
+                {{ timezone.name }} {{ timezone.offset }}
+              </mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="addTeamForm.controls['timezone'].hasError('required')"
+            >
+              Timezone is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="working-days">
+        <label>Working Days:</label>
+        <section class="example-section">
+          <mat-checkbox
+            class="example-margin"
+            color="primary"
+            *ngFor="let day of daysOfWeek; let i = index"
+            (change)="setDay(i)"
+          >
+            {{ day }}
+          </mat-checkbox>
+        </section>
+      </div>
+      <div class="chip-block">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let user of chosenUsers" (removed)="removeUser(user)">
+            {{ user }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-list>
+        <div class="icons-block">
+          <mat-icon (click)="clearUsers()">close</mat-icon>
+    
+          <mat-icon [matMenuTriggerFor]="menu1">arrow_drop_down</mat-icon>
+          <mat-menu #menu1="matMenu">
+            <button
+              mat-menu-item
+              *ngFor="let user of users"
+              (click)="addUser(user)"
+            >
+              {{ user }}
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <div class="chip-block">
+        <mat-chip-list #chipList>
+          <mat-chip
+            *ngFor="let user of approvedUsers"
+            (removed)="removeApprovedUser(user)"
+          >
+            {{ user }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-list>
+        <div class="icons-block">
+          <mat-icon (click)="clearApprovedUsers()">close</mat-icon>
+          <mat-icon [matMenuTriggerFor]="menu2">arrow_drop_down</mat-icon>
+          <mat-menu #menu2="matMenu">
+            <button
+              mat-menu-item
+              *ngFor="let user of users"
+              (click)="addApprovedUser(user)"
+            >
+              {{ user }}
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <section class="example-section">
+        <mat-checkbox
+          class="example-margin"
+          color="primary"
+          formControlName="is_import_holidays"
+        >
+          Automatically import holidays from Locate
+        </mat-checkbox>
+      </section>
+  </div>
+  <div class="footer">
+    <button mat-raised-button color="primary">Save</button>
+  </div>
+</form>
