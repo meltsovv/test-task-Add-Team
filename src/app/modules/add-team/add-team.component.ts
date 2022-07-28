@@ -25,7 +25,7 @@ export class AddTeamComponent implements OnInit, OnDestroy {
 
   approvedUsers: string[] = [];
 
-  users: string[] = ['aaa', 'ddd', 'vvv'];
+  users: string[] = ['test', 'user'];
 
   working_days: number[] = [];
 
@@ -71,14 +71,14 @@ export class AddTeamComponent implements OnInit, OnDestroy {
     this.addTeamForm.get('working_days')?.patchValue(this.working_days);
   }
 
-  addUser(user: any) {
+  addUser(user: any) { // 'any' will be changed
     if (!this.chosenUsers.includes(user)) {
       this.chosenUsers.push(user);
       this.addTeamForm.get('users')?.patchValue(this.chosenUsers);
     }
   }
 
-  removeUser(e: any) {
+  removeUser(e: any) { // 'any' will be changed
     this.chosenUsers = this.chosenUsers.filter((el) => el != e);
     this.addTeamForm.get('users')?.patchValue(this.chosenUsers);
   }
@@ -95,7 +95,7 @@ export class AddTeamComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeApprovedUser(user: any) {
+  removeApprovedUser(user: any) { // 'any' will be changed
     this.approvedUsers = this.approvedUsers.filter((el) => el != user);
     this.addTeamForm.get('approvers')?.patchValue(this.approvedUsers);
   }
