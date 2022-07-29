@@ -6,6 +6,10 @@ import { daysOfWeek } from 'src/app/core/data/days.array';
 import { timezoneList } from 'src/app/core/data/timezone-list.array';
 import { ApiService } from 'src/app/services/api.service';
 import { takeUntil } from 'rxjs/operators';
+import { User } from 'src/app/types/user';
+import { ErrorService } from 'src/app/services/error.service';
+import { IError } from 'src/app/types/errors';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add-team',
@@ -21,17 +25,17 @@ export class AddTeamComponent implements OnInit, OnDestroy {
 
   countryList = countryListAlpha;
 
-  chosenUsers: string[] = [];
+  chosenUsers: User[] = [];
 
-  approvedUsers: string[] = [];
+  approvedUsers: User[] = [];
 
-  users: string[] = ['test', 'user'];
+  users: User[] = [];
 
   working_days: number[] = [];
 
   private destroyed$: Subject<null> = new Subject();
 
-  constructor(fb: FormBuilder, private api: ApiService) {
+  constructor(fb: FormBuilder, private api: ApiService, public errorService: ErrorService,private _snackBar: MatSnackBar) {
     this.addTeamForm = fb.group({
       name: ['', Validators.required],
       country_code: ['', Validators.required],
@@ -41,7 +45,6 @@ export class AddTeamComponent implements OnInit, OnDestroy {
       approvers: [[], Validators.required],
       is_import_holidays: [false, Validators.required],
     });
-    console.log(this.addTeamForm);
   }
 
   ngOnInit(): void {
@@ -49,7 +52,7 @@ export class AddTeamComponent implements OnInit, OnDestroy {
       .getDropDownUsers()
       .pipe(takeUntil(this.destroyed$))
       .subscribe((res) => {
-        console.log(res);
+        this.users = res.data;
       });
   }
 
@@ -58,7 +61,9 @@ export class AddTeamComponent implements OnInit, OnDestroy {
       .saveTeam(this.addTeamForm.value)
       .pipe(takeUntil(this.destroyed$))
       .subscribe((res) => {
-        console.log(res);
+        this.errorService.error = new IError()
+        this.errorService.somethingWentWrong = false;
+        this._snackBar.open('Saved', 'close');
       });
   }
 
@@ -71,38 +76,38 @@ export class AddTeamComponent implements OnInit, OnDestroy {
     this.addTeamForm.get('working_days')?.patchValue(this.working_days);
   }
 
-  addUser(user: any) { // 'any' will be changed
+  addUser(user: User) {
     if (!this.chosenUsers.includes(user)) {
       this.chosenUsers.push(user);
-      this.addTeamForm.get('users')?.patchValue(this.chosenUsers);
+      this.addTeamForm.get('users')?.patchValue(this.chosenUsers.map(el=> el.id));
     }
   }
 
-  removeUser(e: any) { // 'any' will be changed
+  removeUser(e: User) {
     this.chosenUsers = this.chosenUsers.filter((el) => el != e);
-    this.addTeamForm.get('users')?.patchValue(this.chosenUsers);
+    this.addTeamForm.get('users')?.patchValue(this.chosenUsers.map(el=> el.id));
   }
 
   clearUsers() {
     this.chosenUsers = [];
-    this.addTeamForm.get('users')?.patchValue(this.chosenUsers);
+    this.addTeamForm.get('users')?.patchValue(this.chosenUsers.map(el=> el.id));
   }
 
-  addApprovedUser(user: any) {
+  addApprovedUser(user: User) {
     if (!this.approvedUsers.includes(user)) {
       this.approvedUsers.push(user);
-      this.addTeamForm.get('approvers')?.patchValue(this.approvedUsers);
+      this.addTeamForm.get('approvers')?.patchValue(this.approvedUsers.map(el=> el.id));
     }
   }
 
-  removeApprovedUser(user: any) { // 'any' will be changed
+  removeApprovedUser(user: User) {
     this.approvedUsers = this.approvedUsers.filter((el) => el != user);
-    this.addTeamForm.get('approvers')?.patchValue(this.approvedUsers);
+    this.addTeamForm.get('approvers')?.patchValue(this.approvedUsers.map(el=> el.id));
   }
 
   clearApprovedUsers() {
     this.approvedUsers = [];
-    this.addTeamForm.get('approvers')?.patchValue(this.approvedUsers);
+    this.addTeamForm.get('approvers')?.patchValue(this.approvedUsers.map(el=> el.id));
   }
 
   ngOnDestroy() {

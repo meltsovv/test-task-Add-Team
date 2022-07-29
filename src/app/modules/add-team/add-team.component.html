@@ -1,6 +1,7 @@
 <div class="header">
   <div>
     <h1>Add Team</h1>
+    <mat-error *ngIf="errorService.somethingWentWrong">Something went wrong</mat-error>
   </div>
   <div>
     <button mat-stroked-button>x</button>
@@ -17,10 +18,11 @@
             formControlName="name"
             placeholder="Best team"
           />
-          <mat-error *ngIf="addTeamForm.controls['name'].hasError('required')">
-            Team name is <strong>required</strong>
+          <mat-error *ngIf="errorService.getNestedError('name')">
+            {{errorService.getNestedError('name')}}
           </mat-error>
         </mat-form-field>
+
       </div>
       <div class="flex">
         <div class="select-block">
@@ -41,6 +43,9 @@
               Country is <strong>required</strong>
             </mat-error>
           </mat-form-field>
+          <mat-error *ngIf="errorService.getNestedError('country_code')">
+            {{errorService.getNestedError('country_code')}}
+          </mat-error>
         </div>
         <div class="select-block">
           <label>Timezone</label>
@@ -60,6 +65,9 @@
               Timezone is <strong>required</strong>
             </mat-error>
           </mat-form-field>
+          <mat-error *ngIf="errorService.getNestedError('timezone')">
+            {{errorService.getNestedError('timezone')}}
+          </mat-error>
         </div>
       </div>
       <div class="working-days">
@@ -74,11 +82,14 @@
             {{ day }}
           </mat-checkbox>
         </section>
+        <mat-error *ngIf="errorService.getNestedError('working_days')">
+          {{errorService.getNestedError('working_days')}}
+        </mat-error>
       </div>
       <div class="chip-block">
         <mat-chip-list #chipList>
           <mat-chip *ngFor="let user of chosenUsers" (removed)="removeUser(user)">
-            {{ user }}
+            {{ user.full_name }}
             <button matChipRemove>
               <mat-icon>cancel</mat-icon>
             </button>
@@ -86,7 +97,7 @@
         </mat-chip-list>
         <div class="icons-block">
           <mat-icon (click)="clearUsers()">close</mat-icon>
-    
+
           <mat-icon [matMenuTriggerFor]="menu1">arrow_drop_down</mat-icon>
           <mat-menu #menu1="matMenu">
             <button
@@ -94,18 +105,21 @@
               *ngFor="let user of users"
               (click)="addUser(user)"
             >
-              {{ user }}
+              {{ user.full_name }}
             </button>
           </mat-menu>
         </div>
       </div>
+      <mat-error *ngIf="errorService.getNestedError('users')">
+        {{errorService.getNestedError('users')}}
+      </mat-error>
       <div class="chip-block">
         <mat-chip-list #chipList>
           <mat-chip
             *ngFor="let user of approvedUsers"
             (removed)="removeApprovedUser(user)"
           >
-            {{ user }}
+            {{ user.full_name }}
             <button matChipRemove>
               <mat-icon>cancel</mat-icon>
             </button>
@@ -120,11 +134,14 @@
               *ngFor="let user of users"
               (click)="addApprovedUser(user)"
             >
-              {{ user }}
+              {{ user.full_name }}
             </button>
           </mat-menu>
         </div>
       </div>
+      <mat-error *ngIf="errorService.getNestedError('approvers')">
+        {{errorService.getNestedError('approvers')}}
+      </mat-error>
       <section class="example-section">
         <mat-checkbox
           class="example-margin"

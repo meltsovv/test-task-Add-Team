@@ -5,12 +5,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ContentLayoutComponent } from './content-layout/content-layout.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { UnprocessableEntityInterceptor } from './core/interceptors/unprocessable-entity.interceptor';
 
 @NgModule({
   declarations: [AppComponent, ContentLayoutComponent],
-  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule],
-  providers: [],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UnprocessableEntityInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { UsersResponse } from '../types/users.response';
+import { TeamRequest } from '../types/team.request';
 
 @Injectable({
   providedIn: 'root',
@@ -20,25 +22,25 @@ export class ApiService {
     return header;
   }
 
-  public getDropDownUsers(): Observable<any> {
-    return this.httpClient.get<any>(
+  public getDropDownUsers(): Observable<UsersResponse> {
+    return this.httpClient.get<UsersResponse>(
       `${this.apiUrl}/private/users/dropdown-options`,
       this.getHeaders()
     );
   }
 
-  public saveTeam(json: string): Observable<any> {
-    return this.httpClient.post<any>(
+  public saveTeam(data: TeamRequest): Observable<UsersResponse> {
+    return this.httpClient.post<UsersResponse>(
       `${this.apiUrl}/private/teams`,
-      json,
+      data,
       this.getHeaders()
     );
   }
 
-  public getTeams(): Observable<any> {
-    return this.httpClient.get<any>(
-      `${this.apiUrl}/private/teams`,
-      this.getHeaders()
-    );
-  }
+  // public getTeams(): Observable<any> {
+  //   return this.httpClient.get<any>(
+  //     `${this.apiUrl}/private/teams`,
+  //     this.getHeaders()
+  //   );
+  // }
 }
